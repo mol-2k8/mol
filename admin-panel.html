@@ -993,7 +993,7 @@
        SHARED DATA LAYER — Google Apps Script backend
        ⚠️  Paste URL Apps Script vào GAS_URL sau khi deploy
        ============================================================ */
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbw_E0LMWBx-jpXag75I7NQ-k7rfHIkJBPSVDyeYpaEDlaEDG3ZR21DyaLSwt-ceNepWGQ/execPASTE_YOUR_APPS_SCRIPT_URL_HERE';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbw_E0LMWBx-jpXag75I7NQ-k7rfHIkJBPSVDyeYpaEDlaEDG3ZR21DyaLSwt-ceNepWGQ/exec';
 
     // Cache local để UI phản hồi nhanh
     let _cache = { messages: [], pageviews: [], projects: [], achievements: [], experience: [] };
@@ -1002,7 +1002,7 @@
       uid: () => Date.now() + Math.random().toString(36).slice(2, 5),
 
       async _get(action) {
-        if (GAS_URL === 'PASTE_https://script.google.com/macros/s/AKfycbw_E0LMWBx-jpXag75I7NQ-k7rfHIkJBPSVDyeYpaEDlaEDG3ZR21DyaLSwt-ceNepWGQ/execYOUR_APPS_SCRIPT_URL_HERE') return [];
+        if (GAS_URL === 'https://script.google.com/macros/s/AKfycbw_E0LMWBx-jpXag75I7NQ-k7rfHIkJBPSVDyeYpaEDlaEDG3ZR21DyaLSwt-ceNepWGQ/exec') return [];
         try {
           const res = await fetch(GAS_URL + '?action=' + action);
           const data = await res.json();
@@ -1011,7 +1011,7 @@
       },
 
       async _post(action, data) {
-        if (GAS_URL === 'PASTE_YOUR_APPShttps://script.google.com/macros/s/AKfycbw_E0LMWBx-jpXag75I7NQ-k7rfHIkJBPSVDyeYpaEDlaEDG3ZR21DyaLSwt-ceNepWGQ/exec_SCRIPT_URL_HERE') return null;
+        if (GAS_URL === 'https://script.google.com/macros/s/AKfycbw_E0LMWBx-jpXag75I7NQ-k7rfHIkJBPSVDyeYpaEDlaEDG3ZR21DyaLSwt-ceNepWGQ/exec') return null;
         try {
           const res = await fetch(GAS_URL, {
             method: 'POST',
