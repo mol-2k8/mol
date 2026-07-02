@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TUAN.OS — Admin Panel</title>
+<title>MOL — Admin Panel</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap');
 :root{
@@ -168,7 +168,7 @@ tr:hover td{background:rgba(0,245,255,.025);}
 
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">TUAN.OS</div>
+    <div class="login-logo">MOL</div>
     <div class="login-sub">// ADMIN CONTROL PANEL · XÁC THỰC YÊU CẦU</div>
     <div class="login-field"><label>Username</label><input type="text" id="lu" placeholder="admin" autocomplete="off"></div>
     <div class="login-field"><label>Password</label><input type="password" id="lp" placeholder="••••••••"></div>
@@ -183,7 +183,7 @@ tr:hover td{background:rgba(0,245,255,.025);}
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="brand"><div class="mark">TUAN.OS</div><div class="sub">ADMIN CONTROL PANEL</div></div>
+    <div class="brand"><div class="mark">MOL</div><div class="sub">ADMIN CONTROL PANEL</div></div>
     <div class="nav">
       <div class="nav-item active" data-view="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard
@@ -390,7 +390,7 @@ const DB = {
 };
 
 /* AUTH (đổi username/password tại đây) */
-const CREDS = { user:'tuanadmin', pass:'hust2025' };
+const CREDS = { user:'molad', pass:'140808' };
 
 function doLogin(){
   if(document.getElementById('lu').value===CREDS.user && document.getElementById('lp').value===CREDS.pass){
