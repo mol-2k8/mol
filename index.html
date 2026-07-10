@@ -1,0 +1,2859 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nguyen Anh Tuan // PORTFOLIO</title>
+  
+  <!-- Google Fonts Import: Archivo & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+  
+  <style>
+    /* ============================================================
+       DESIGN TOKENS & SYSTEM BASE
+       ============================================================ */
+    :root {
+      --color-bg: #030712;
+      --color-panel: rgba(13, 20, 38, 0.45);
+      --color-panel-hover: rgba(17, 26, 48, 0.6);
+      --color-primary: #f3f4f6;
+      --color-muted: #9ca3af;
+      --color-border: rgba(255, 255, 255, 0.08);
+      --color-border-focus: rgba(0, 245, 255, 0.35);
+      
+      --neon-cyan: #00f5ff;
+      --neon-purple: #a855f7;
+      --neon-green: #22c55e;
+      
+      --glow-cyan: 0 0 12px rgba(0, 245, 255, 0.35);
+      --glow-purple: 0 0 12px rgba(168, 85, 247, 0.35);
+      --glow-green: 0 0 12px rgba(34, 197, 94, 0.35);
+      
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Archivo', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-primary);
+      overflow-x: hidden;
+      cursor: crosshair;
+      line-height: 1.6;
+    }
+
+    body.neon-cursor-active {
+      cursor: none;
+    }
+
+    /* ============================================================
+       AURORA EVOLVED MESH BACKGROUND
+       ============================================================ */
+    .aurora-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-color: var(--color-bg);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.28;
+      mix-blend-mode: screen;
+      animation: float 25s infinite alternate ease-in-out;
+      will-change: transform;
+    }
+
+    .blob-cyan {
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
+      top: -15vw;
+      left: -15vw;
+    }
+
+    .blob-purple {
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
+      bottom: -20vw;
+      right: -15vw;
+      animation-delay: -7s;
+    }
+
+    .blob-green {
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, var(--neon-green) 0%, transparent 70%);
+      top: 30vh;
+      left: 35vw;
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+      50% { transform: translate(4vw, 6vh) scale(1.1) rotate(180deg); }
+      100% { transform: translate(-4vw, -6vh) scale(0.95) rotate(360deg); }
+    }
+
+    #interactive-bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* Screen Scanlines Overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.12) 2px, rgba(0, 0, 0, 0.12) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ============================================================
+       SPA & GLOBAL CONTAINERS
+       ============================================================ */
+    #global-container {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding-top: 8.5rem;
+      padding-bottom: 5rem;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ============================================================
+       FLOATING NAV BAR (FROSTED GLASS)
+       ============================================================ */
+    nav {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      z-index: 1000;
+      padding: 0.85rem 2rem;
+      background: var(--color-panel);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid var(--color-border);
+      border-radius: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s ease;
+      max-width: 1152px;
+      margin: 0 auto;
+    }
+
+    nav.pz-lite {
+      backdrop-filter: none;
+      background: rgba(13, 20, 38, 0.96);
+    }
+
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      text-decoration: none;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links li button {
+      background: none;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links li button:hover {
+      color: var(--color-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-links li button.sub-active {
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      background: rgba(0, 245, 255, 0.08);
+      border: 1px solid rgba(0, 245, 255, 0.2);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: 1px solid var(--color-border);
+      color: var(--color-muted);
+      padding: 0.4rem 0.65rem;
+      border-radius: 0.5rem;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-hamburger:hover {
+      color: var(--color-primary);
+      border-color: var(--color-muted);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      letter-spacing: 1px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--neon-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-green);
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+      z-index: 1001;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    /* ============================================================
+       COMMON SECTION STYLING
+       ============================================================ */
+    section {
+      padding: 4.5rem 0;
+    }
+
+    .section-label {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 2.5rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cyber-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+      margin: 2rem 0;
+    }
+
+    /* ============================================================
+       GLASS PANELS & CARDS (TILT EFFECT BASE)
+       ============================================================ */
+    .glass-card {
+      background: var(--color-panel);
+      border: 1px solid var(--color-border);
+      border-radius: 1rem;
+      padding: 2.25rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 245, 255, 0.25);
+      box-shadow: 0 15px 35px -15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 245, 255, 0.05);
+    }
+
+    /* Premium card indicator led */
+    .card-led {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--neon-cyan);
+      box-shadow: 0 0 6px var(--neon-cyan);
+      opacity: 0.8;
+    }
+
+    /* ============================================================
+       BUTTONS (REFINED ACTIONS)
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.95rem 2rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: rgba(0, 245, 255, 0.08);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 245, 255, 0.35);
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: var(--neon-cyan);
+      color: #030712;
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--color-primary);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--color-muted);
+      transform: translateY(-2px);
+    }
+
+    /* Ripple Effect style */
+    .ripple {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleEffect 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes rippleEffect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* ============================================================
+       PAGE: HOME (HERO, ABOUT BIO, MODULE NAVIGATION, CONTACT)
+       ============================================================ */
+    #hero-section {
+      min-height: 80vh;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 4rem;
+      align-items: center;
+      padding-top: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 4px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-name {
+      font-family: var(--font-heading);
+      font-size: clamp(3.25rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-name span {
+      display: block;
+    }
+
+    .hero-name .line-gradient {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: 1.15rem;
+      color: var(--color-muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .hero-tagline strong {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Terminal Mockup */
+    .hero-terminal {
+      background: rgba(8, 12, 24, 0.7);
+      border: 1px solid var(--color-border);
+      border-radius: 1rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      font-family: monospace;
+      font-size: 0.85rem;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      padding: 0.85rem 1.25rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-title {
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      letter-spacing: 1px;
+      margin-left: 0.5rem;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      flex: 1;
+      line-height: 2;
+      color: #94a3b8;
+    }
+
+    .terminal-body .cmd {
+      color: var(--neon-cyan);
+    }
+
+    .terminal-body .out {
+      color: var(--color-primary);
+      padding-left: 0.85rem;
+    }
+
+    .terminal-body .comment {
+      color: rgba(148, 163, 184, 0.45);
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 14px;
+      background: var(--neon-cyan);
+      animation: cursorBlink 1s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* About Bio Details */
+    .about-bio {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+
+    .about-avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 1.25rem;
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      overflow: hidden;
+      box-shadow: var(--glow-cyan);
+      position: relative;
+    }
+
+    .about-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .about-info h3 {
+      font-family: var(--font-heading);
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .role-tag {
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      color: var(--neon-purple);
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .about-info p {
+      color: var(--color-muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    .about-stats {
+      display: flex;
+      gap: 3.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-num {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-muted);
+    }
+
+    /* Skill Matrix Progress Bars */
+    .skills-matrix {
+      margin-top: 2rem;
+    }
+
+    .skill-item {
+      margin-bottom: 1.25rem;
+    }
+
+    .skill-item span {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--color-primary);
+    }
+
+    .skill-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .skill-bar div {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+      width: 0%;
+      border-radius: 3px;
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Modules Navigation Grid */
+    .subpage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .sub-card {
+      cursor: pointer;
+    }
+
+    .sub-card-num {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-purple);
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .sub-card-icon {
+      font-size: 2.25rem;
+      margin-bottom: 1.25rem;
+      color: var(--neon-cyan);
+    }
+
+    .sub-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .sub-card-desc {
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .sub-card-btn {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+
+    .sub-card:hover .sub-card-btn {
+      transform: translateX(4px);
+    }
+
+    /* ============================================================
+       PAGES: DETAILED TABS (ACHIEVEMENTS, PROJECTS, EXPERIENCE)
+       ============================================================ */
+    .subpage-hero {
+      margin-bottom: 3.5rem;
+    }
+
+    .back-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      color: var(--color-muted);
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.65rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      margin-bottom: 2.5rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn:hover {
+      color: var(--color-primary);
+      border-color: var(--color-muted);
+      transform: translateX(-4px);
+    }
+
+    /* Achievements Grid */
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .ach-card {
+      position: relative;
+    }
+
+    .ach-badge {
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      display: inline-block;
+    }
+
+    .ach-category {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+
+    .ach-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .ach-desc {
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .ach-year {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-purple);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+    }
+
+    /* Projects Visual Listing */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .proj-card.featured-proj {
+      grid-column: span 2;
+      border-color: rgba(168, 85, 247, 0.25);
+    }
+
+    .proj-card.featured-proj:hover {
+      border-color: rgba(168, 85, 247, 0.45);
+      box-shadow: 0 15px 35px -15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(168, 85, 247, 0.05);
+    }
+
+    .proj-num {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-purple);
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .proj-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .proj-desc {
+      color: var(--color-muted);
+      margin-bottom: 2rem;
+      line-height: 1.75;
+    }
+
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.85rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--color-muted);
+    }
+
+    .proj-card:hover .tag {
+      border-color: rgba(255, 255, 255, 0.15);
+      color: var(--color-primary);
+    }
+
+    /* Experience timeline elements */
+    .exp-timeline {
+      position: relative;
+      padding-left: 2.5rem;
+    }
+
+    .exp-timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 1px;
+      background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple), transparent);
+    }
+
+    .exp-item {
+      position: relative;
+      margin-bottom: 3.5rem;
+    }
+
+    .exp-item::before {
+      content: '';
+      position: absolute;
+      left: calc(-2.5rem - 4.5px);
+      top: 0.5rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .exp-period {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--neon-purple);
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .exp-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .exp-sub {
+      font-size: 0.9rem;
+      color: var(--neon-cyan);
+      margin-bottom: 0.85rem;
+      font-weight: 500;
+    }
+
+    .exp-desc {
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .exp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    /* Hobbies Grid Section */
+    .hobby-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .hobby-card {
+      background: var(--color-panel);
+      border: 1px solid var(--color-border);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .hobby-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: var(--color-panel-hover);
+      transform: translateY(-2px);
+    }
+
+    .hobby-icon {
+      font-size: 1.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hobby-name {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ============================================================
+       CONTACT FORM (REFINED INPUT SYSTEM)
+       ============================================================ */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 4rem;
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-heading);
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .contact-info p {
+      color: var(--color-muted);
+      margin-bottom: 2.5rem;
+      font-size: 1.05rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1rem 1.5rem;
+      background: var(--color-panel);
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      text-decoration: none;
+      color: var(--color-muted);
+      transition: all 0.3s ease;
+    }
+
+    .contact-link:hover {
+      border-color: rgba(0, 245, 255, 0.25);
+      color: var(--color-primary);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-link-icon {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      width: 20px;
+      text-align: center;
+    }
+
+    .contact-link-text {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      background: rgba(8, 12, 24, 0.6);
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      padding: 0.85rem 1.25rem;
+      color: var(--color-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.12);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-submit {
+      width: 100%;
+      justify-content: center;
+      background: rgba(0, 245, 255, 0.05);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: var(--neon-cyan);
+    }
+
+    .form-submit:hover {
+      background: var(--neon-cyan);
+      color: #030712;
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+    }
+
+    /* Footer structure */
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      border-top: 1px solid var(--color-border);
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      letter-spacing: 2px;
+      margin-top: 3.5rem;
+    }
+
+    footer span {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       CARD 3D FLIP MECHANICS (ACHIEVEMENTS / PROJECTS)
+       ============================================================ */
+    .ach-card, .proj-card {
+      perspective: 1200px;
+      height: 100%;
+    }
+
+    .card-flip-outer {
+      cursor: pointer;
+    }
+
+    .card-flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card-flip-outer.flipped .card-flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .card-face-front {
+      position: relative;
+      height: 100%;
+    }
+
+    .card-face-back {
+      position: absolute;
+      inset: 0;
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2.25rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      background: rgba(15, 10, 32, 0.85);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-back-badge {
+      font-size: 2.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .card-back-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .card-back-meta {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      color: var(--neon-purple);
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-back-scan {
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+    }
+
+    .card-back-taglist {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .card-back-taglist span {
+      font-family: var(--font-heading);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--neon-cyan);
+    }
+
+    .card-back-hint {
+      position: absolute;
+      bottom: 1rem;
+      font-family: var(--font-heading);
+      font-size: 0.7rem;
+      color: var(--color-muted);
+      opacity: 0.65;
+    }
+
+    /* ============================================================
+       TUAN.AI CHAT WIDGET
+       ============================================================ */
+    #tuanai-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      background: #080c18;
+      border: 1px solid var(--neon-cyan);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 245, 255, 0.25), inset 0 0 10px rgba(0, 245, 255, 0.15);
+      z-index: 999;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #tuanai-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 35px rgba(0, 245, 255, 0.45);
+    }
+
+    #tuanai-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    #tuanai-toggle .pulse {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      top: 3px;
+      right: 3px;
+      box-shadow: 0 0 6px var(--neon-green);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #tuanai-panel {
+      position: fixed;
+      bottom: 6.5rem;
+      right: 2rem;
+      width: 360px;
+      max-width: 90vw;
+      height: 480px;
+      max-height: 70vh;
+      background: rgba(8, 12, 24, 0.85);
+      border: 1px solid var(--color-border);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 245, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(15px) scale(0.95);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #tuanai-panel.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+      border-color: rgba(0, 245, 255, 0.25);
+    }
+
+    .tuanai-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tuanai-avatar {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--neon-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--neon-green);
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    .tuanai-title {
+      flex: 1;
+    }
+
+    .tuanai-title .name {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+    }
+
+    .tuanai-title .status {
+      font-size: 0.65rem;
+      color: var(--neon-green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 1px;
+    }
+
+    .tuanai-title .status::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: var(--neon-green);
+    }
+
+    .tuanai-close {
+      cursor: pointer;
+      color: var(--color-muted);
+      font-size: 1.15rem;
+      padding: 0.25rem;
+      transition: color 0.2s ease;
+    }
+
+    .tuanai-close:hover {
+      color: var(--neon-cyan);
+    }
+
+    .tuanai-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    .tuanai-messages .msg {
+      max-width: 85%;
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.85rem;
+      position: relative;
+    }
+
+    .tuanai-messages .msg.bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-border);
+      border-left: 2px solid var(--neon-cyan);
+      color: var(--color-primary);
+    }
+
+    .tuanai-messages .msg.user {
+      align-self: flex-end;
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-right: 2px solid var(--neon-purple);
+      color: #f3f0ff;
+    }
+
+    .tuanai-messages .msg .label {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .tuanai-messages .typing {
+      align-self: flex-start;
+      display: flex;
+      gap: 3px;
+      padding: 0.85rem;
+    }
+
+    .tuanai-messages .typing span {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: var(--neon-cyan);
+      animation: typingBlink 1.2s infinite ease-in-out;
+    }
+
+    .tuanai-messages .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .tuanai-messages .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBlink {
+      0%, 80%, 100% { opacity: 0.2; }
+      40% { opacity: 1; }
+    }
+
+    .tuanai-suggestions {
+      display: flex;
+      gap: 0.35rem;
+      padding: 0 1.25rem 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .tuanai-chip {
+      font-family: var(--font-heading);
+      font-size: 0.7rem;
+      font-weight: 500;
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      color: var(--neon-cyan);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: rgba(0, 245, 255, 0.02);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tuanai-chip:hover {
+      background: rgba(0, 245, 255, 0.08);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.15);
+    }
+
+    .tuanai-inputbar {
+      display: flex;
+      border-top: 1px solid var(--color-border);
+      padding: 0.75rem 1rem;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.01);
+      border-bottom-left-radius: 1.25rem;
+      border-bottom-right-radius: 1.25rem;
+    }
+
+    .tuanai-inputbar input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--color-border);
+      border-radius: 0.5rem;
+      color: var(--color-primary);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      padding: 0.65rem 0.85rem;
+      outline: none;
+    }
+
+    .tuanai-inputbar input:focus {
+      border-color: rgba(0, 245, 255, 0.3);
+    }
+
+    .tuanai-send {
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 245, 255, 0.05);
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      color: var(--neon-cyan);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .tuanai-send:hover {
+      background: var(--neon-cyan);
+      color: #030712;
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.3);
+    }
+
+    .tuanai-send svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+    }
+
+    /* Embedded Chat Contact Form */
+    .tuanai-contact-form {
+      background: rgba(168, 85, 247, 0.03);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .tuanai-contact-form .ttl {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--neon-purple);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+    }
+
+    .tuanai-contact-form input, .tuanai-contact-form textarea {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--color-border);
+      border-radius: 0.4rem;
+      color: var(--color-primary);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .tuanai-contact-form textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    .tuanai-contact-form button {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #f3f0ff;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      padding: 0.5rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.75rem;
+    }
+
+    .tuanai-contact-form button:hover {
+      background: var(--neon-purple);
+      color: #030712;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+    }
+
+    /* ============================================================
+       PAGE TRANSITION OVERLAYS & PRELOADER
+       ============================================================ */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background-color: var(--color-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease;
+    }
+
+    .loader-container {
+      width: 240px;
+      text-align: center;
+    }
+
+    .loader-title {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .loader-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+      transition: width 0.2s ease;
+    }
+
+    /* Fallback cursor indicator styles */
+    #cursor-fallback {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    #cursor-fallback::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 8px 2px rgba(0, 245, 255, 0.9), 0 0 20px 6px rgba(0, 245, 255, 0.4);
+    }
+
+    #cursor-fallback::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    body.neon-cursor-active #cursor-fallback {
+      opacity: 1;
+    }
+
+    /* 3D Depth Zoom fallback style hooks */
+    .page.pz-exit {
+      position: fixed;
+      inset: 0;
+      z-index: 4;
+      overflow: hidden;
+      pointer-events: none;
+      transition: transform 0.58s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+      transform: translateZ(-280px) scale(0.86) rotateY(-10deg);
+      opacity: 0;
+    }
+
+    .page.pz-enter {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .page.pz-enter-from {
+      transform: translateZ(-280px) translateY(24px) scale(0.86) rotateY(10deg);
+      opacity: 0;
+    }
+
+    .page.pz-enter-to {
+      transition: transform 0.58s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+      transform: translateZ(0) translateY(0) scale(1) rotateY(0deg);
+      opacity: 1;
+    }
+
+    /* ============================================================
+       RESPONSIVE ADAPTATIONS (MOBILE OPTIMIZATIONS)
+       ============================================================ */
+    @media (max-width: 900px) {
+      nav {
+        padding: 0.85rem 1.5rem;
+      }
+      
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 5.5rem;
+        left: 1.5rem;
+        right: 1.5rem;
+        z-index: 999;
+        flex-direction: column;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        background: rgba(8, 12, 24, 0.98);
+        border: 1px solid var(--color-border);
+        border-radius: 1rem;
+        transition: max-height 0.35s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .nav-links.open {
+        max-height: 300px;
+        padding: 1rem 0;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links li button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.85rem 1.5rem;
+        border-radius: 0;
+      }
+
+      #hero-section {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        text-align: center;
+        padding-top: 1rem;
+      }
+
+      .hero-tagline {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-cta {
+        justify-content: center;
+      }
+
+      .hero-terminal {
+        display: none; /* Hide terminal on mobile to optimize layout */
+      }
+
+      .about-bio {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 2rem;
+      }
+
+      .about-stats {
+        justify-content: center;
+        gap: 2.5rem;
+      }
+
+      .subpage-grid, .achievement-grid, .proj-grid, .contact-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .proj-card.featured-proj {
+        grid-column: span 1;
+      }
+
+      .hobby-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-status {
+        display: none;
+      }
+
+      #tuanai-panel {
+        right: 1.5rem;
+        left: 1.5rem;
+        width: auto;
+        bottom: 6rem;
+      }
+
+      .hobby-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      body.neon-cursor-active {
+        cursor: auto !important;
+      }
+      #cursor-fallback {
+        display: none !important;
+      }
+      .blob {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader Screen -->
+  <div id="preloader">
+    <div class="loader-container">
+      <div class="loader-title">// LOADING PROFILE //</div>
+      <div class="loader-track">
+        <div class="loader-bar" id="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Background Canvas & Blur Blobs -->
+  <div class="aurora-bg">
+    <div class="blob blob-cyan"></div>
+    <div class="blob blob-purple"></div>
+    <div class="blob blob-green"></div>
+  </div>
+  <canvas id="interactive-bg-canvas"></canvas>
+
+  <!-- Main Document Container -->
+  <div id="global-container">
+    
+    <!-- Header Navigation Frosted glass Bar -->
+    <nav>
+      <a class="nav-logo" onclick="navigate('home')">MOL</a>
+      <ul class="nav-links" id="nav-links">
+        <li><button onclick="navigate('home')">// home</button></li>
+        <li><button id="nav-achievements" onclick="navigate('achievements')">// thành tích</button></li>
+        <li><button id="nav-projects" onclick="navigate('projects')">// dự án</button></li>
+        <li><button id="nav-experience" onclick="navigate('experience')">// trải nghiệm</button></li>
+      </ul>
+      <div class="nav-right">
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Mở menu">☰</button>
+        <div class="nav-status">
+          <div class="status-dot"></div>ONLINE
+        </div>
+      </div>
+    </nav>
+    <div id="scroll-progress"></div>
+
+    <!-- ==================== TAB: HOME ==================== -->
+    <div class="page active" id="page-home">
+      
+      <!-- Hero Section -->
+      <section id="hero-section">
+        <div class="hero-text-col">
+          <div class="hero-eyebrow">// FRESHER STUDENT · HUST · ITE-10 · K71</div>
+          <h1 class="hero-name">
+            <span>NGUYEN ANH</span>
+            <span class="line-gradient">TUAN</span>
+          </h1>
+          <p class="hero-tagline">
+            Sinh viên <strong>Công nghệ thông tin — ĐH Bách Khoa Hà Nội</strong>, đam mê xây dựng những sản phẩm công nghệ có tác động thực tế. Tôi học nhanh, code cẩn thận và luôn tìm cách giải quyết vấn đề một cách sáng tạo.
+          </p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="navigate('projects')">
+              Xem dự án 
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+            <button class="btn btn-secondary" onclick="navigate('achievements')">Thành tích</button>
+            <button class="btn btn-secondary" onclick="navigate('experience')">Trải nghiệm</button>
+            <button class="btn btn-secondary" onclick="navigateSection('contact')">Liên hệ</button>
+          </div>
+        </div>
+
+        <!-- Terminal Widget -->
+        <div class="hero-terminal">
+          <div class="terminal-header">
+            <div class="terminal-dot" style="background:#ff5f57"></div>
+            <div class="terminal-dot" style="background:#febc2e"></div>
+            <div class="terminal-dot" style="background:#28c840"></div>
+            <span class="terminal-title">PROFILE.SH</span>
+          </div>
+          <div class="terminal-body">
+            <div class="cmd">$ whoami</div>
+            <div class="out">nguyen_anh_tuan</div>
+            <div class="cmd">$ cat role.txt</div>
+            <div class="out">Fresher Student @ HUST · ITE-10 · K71</div>
+            <div class="cmd">$ cat location.txt</div>
+            <div class="out">Ha Noi, Viet Nam 🇻🇳</div>
+            <div class="cmd">$ cat status.txt</div>
+            <div class="out" style="color:#22c55e">Open to opportunities ✓</div>
+            <div class="cmd">$ ls ./skills/</div>
+            <div class="out comment">python/ c++/ web/ algorithms/</div>
+            <div class="cmd">$ _<span class="terminal-cursor"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cyber-divider"></div>
+
+      <!-- About Me Specs -->
+      <section>
+        <div class="section-label">// SYSTEM SPECS</div>
+        <h2 class="section-title">Về <span class="gradient-text">tôi</span></h2>
+        <div class="about-bio">
+          <div class="about-avatar">
+            <img src="avatar.jpg" alt="Nguyen Anh Tuan Avatar"/>
+          </div>
+          <div class="about-info">
+            <h3>Nguyen Anh Tuan</h3>
+            <div class="role-tag">// FRESHER_STUDENT · ITE-10 · K71 · HUST</div>
+            <p>Mình là tân sinh viên ngành <strong style="color:var(--neon-cyan)">ITE-10</strong> khóa 71 tại Đại học Bách Khoa Hà Nội. Mình đam mê công nghệ, luôn chủ động học hỏi và tìm kiếm cơ hội để phát triển bản thân ngay từ những ngày đầu trên giảng đường.</p>
+            <div class="about-stats">
+              <div class="stat-item"><div class="stat-num">K71</div><div class="stat-label">Khóa học</div></div>
+              <div class="stat-item"><div class="stat-num">ITE</div><div class="stat-label">Chuyên ngành</div></div>
+              <div class="stat-item"><div class="stat-num">HUST</div><div class="stat-label">Trường</div></div>
+            </div>
+            
+            <div class="skills-matrix">
+              <h3 style="font-family:var(--font-heading);font-size:1.15rem;color:var(--neon-cyan);text-shadow:var(--glow-cyan);margin-bottom:1.25rem;">// SKILL_MATRIX</h3>
+              <div class="skill-item"><span>Python</span><div class="skill-bar"><div data-width="85%" style="width:0%;"></div></div></div>
+              <div class="skill-item"><span>C++</span><div class="skill-bar"><div data-width="75%" style="width:0%;"></div></div></div>
+              <div class="skill-item"><span>Web (HTML/CSS/JS)</span><div class="skill-bar"><div data-width="70%" style="width:0%;"></div></div></div>
+              <div class="skill-item"><span>Algorithms</span><div class="skill-bar"><div data-width="80%" style="width:0%;"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cyber-divider"></div>
+
+      <!-- Module Navigation Grid Cards -->
+      <section>
+        <div class="section-label">// NAVIGATE_MODULES</div>
+        <h2 class="section-title">Khám phá <span class="gradient-text">portfolio</span></h2>
+        <div class="subpage-grid">
+          <div class="glass-card sub-card" onclick="navigate('achievements')">
+            <div class="sub-card-num">// MODULE_01</div>
+            <div class="sub-card-icon">🏆</div>
+            <div class="sub-card-title">Thành tích cá nhân</div>
+            <div class="sub-card-desc">Giải thưởng học tập, học bổng, chứng chỉ và các cuộc thi nổi bật mà mình đã đạt được.</div>
+            <span class="sub-card-btn">Xem ngay →</span>
+          </div>
+          <div class="glass-card sub-card" onclick="navigate('projects')">
+            <div class="sub-card-num">// MODULE_02</div>
+            <div class="sub-card-icon">💻</div>
+            <div class="sub-card-title">Dự án</div>
+            <div class="sub-card-desc">Những dự án lập trình, sản phẩm công nghệ mình đã xây dựng và đóng góp.</div>
+            <span class="sub-card-btn">Xem ngay →</span>
+          </div>
+          <div class="glass-card sub-card" onclick="navigate('experience')">
+            <div class="sub-card-num">// MODULE_03</div>
+            <div class="sub-card-icon">🧠</div>
+            <div class="sub-card-title">Trải nghiệm cá nhân</div>
+            <div class="sub-card-desc">Hành trình học tập, sở thích và những khoảnh khắc đã định hình con người mình.</div>
+            <span class="sub-card-btn">Xem ngay →</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="cyber-divider"></div>
+
+      <!-- Contact Info & Submit Form -->
+      <section id="contact">
+        <div class="section-label">// ESTABLISH_CONNECTION</div>
+        <h2 class="section-title">Liên hệ <span class="gradient-text">với tôi</span></h2>
+        <div class="contact-wrapper">
+          <div class="contact-info">
+            <h3>Kết nối với Tuan</h3>
+            <p>Mình đang tìm kiếm cơ hội thực tập hoặc part-time trong lĩnh vực phát triển phần mềm. Nếu bạn có dự án thú vị hoặc muốn cùng nhau build thứ gì đó — đừng ngại liên hệ!</p>
+            <div class="contact-links">
+              <div class="contact-link">
+                <span class="contact-link-icon">@</span>
+                <span class="contact-link-text">tuan2k8cht@gmail.com</span>
+              </div>
+              <a href="https://www.facebook.com/nguyen.anhtuan.196085" target="_blank" class="contact-link">
+                <span class="contact-link-icon">fb</span>
+                <span class="contact-link-text">Nguyen Anh Tuan</span>
+              </a>
+              <div class="contact-link">
+                <span class="contact-link-icon">☏</span>
+                <span class="contact-link-text">0934 424 008</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="contact-form">
+              <div class="form-group">
+                <label>// Tên của bạn</label>
+                <input type="text" placeholder="Nguyen Van B"/>
+              </div>
+              <div class="form-group">
+                <label>// Email</label>
+                <input type="email" placeholder="hello@example.com"/>
+              </div>
+              <div class="form-group">
+                <label>// Nội dung</label>
+                <textarea placeholder="Xin chào! Mình muốn hợp tác về..."></textarea>
+              </div>
+              <button class="btn form-submit" onclick="handleSubmit(this)">// GỬI TÍN HIỆU</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>NGUYEN ANH TUAN</span> · FRESHER STUDENT @ HUST · ITE-10 · K71 · <span id="year"></span>
+      </footer>
+    </div>
+
+    <!-- ==================== TAB: ACHIEVEMENTS ==================== -->
+    <div class="page" id="page-achievements">
+      <div class="subpage-hero">
+        <button class="back-btn" onclick="navigate('home')">← // BACK_TO_HOME</button>
+        <div class="section-label">// MODULE_01 · PERSONAL_RECORDS</div>
+        <h1 class="section-title">Thành tích <span class="gradient-text">cá nhân</span></h1>
+      </div>
+      <div class="subpage-content">
+
+        <!-- GIẢI THƯỞNG -->
+        <div class="section-label" style="margin-bottom:1.5rem">// AWARDS &amp; SCHOLARSHIPS</div>
+        <div class="achievement-grid" style="margin-bottom:3.5rem">
+          <div class="glass-card ach-card gold-border">
+            <div class="card-led" style="background-color: #ffd700; box-shadow: 0 0 6px #ffd700;"></div>
+            <span class="ach-badge">🥇</span>
+            <div class="ach-category">// HSG QUỐC GIA</div>
+            <div class="ach-title">Giải Nhất Học sinh Giỏi Quốc gia môn Vật lý</div>
+            <div class="ach-desc">Đạt giải Nhất kỳ thi chọn học sinh giỏi quốc gia môn Vật lý — thành tích cao nhất trong sự nghiệp học sinh chuyên Lý.</div>
+            <div class="ach-year">// 2025 — 2026</div>
+          </div>
+          <div class="glass-card ach-card bronze-border">
+            <div class="card-led" style="background-color: #cd7f32; box-shadow: 0 0 6px #cd7f32;"></div>
+            <span class="ach-badge">🥉</span>
+            <div class="ach-category">// HSG QUỐC GIA</div>
+            <div class="ach-title">Giải Ba Học sinh Giỏi Quốc gia môn Vật lý</div>
+            <div class="ach-desc">Đạt giải Ba kỳ thi chọn học sinh giỏi quốc gia môn Vật lý, khẳng định năng lực chuyên sâu ở cấp độ toàn quốc.</div>
+            <div class="ach-year">// 2024 — 2025</div>
+          </div>
+          <div class="glass-card ach-card gold-border">
+            <div class="card-led" style="background-color: #ffd700; box-shadow: 0 0 6px #ffd700;"></div>
+            <span class="ach-badge">🥇</span>
+            <div class="ach-category">// HSG TỈNH</div>
+            <div class="ach-title">Giải Nhất Học sinh Giỏi Tỉnh môn Vật lý</div>
+            <div class="ach-desc">Đạt giải Nhất kỳ thi học sinh giỏi cấp tỉnh môn Vật lý, hai năm liên tiếp 2024-2025 và 2025-2026.</div>
+            <div class="ach-year">// 2024 — 2026</div>
+          </div>
+          <div class="glass-card ach-card gold-border">
+            <div class="card-led" style="background-color: #ffd700; box-shadow: 0 0 6px #ffd700;"></div>
+            <span class="ach-badge">🥇</span>
+            <div class="ach-category">// HSG TỈNH</div>
+            <div class="ach-title">Giải Nhất Học sinh Giỏi Tỉnh môn Vật lý (lớp 10)</div>
+            <div class="ach-desc">Đạt giải Nhất kỳ thi học sinh giỏi cấp tỉnh môn Vật lý ngay từ năm lớp 10 — khởi đầu cho hành trình chuyên Lý.</div>
+            <div class="ach-year">// 2023</div>
+          </div>
+        </div>
+
+        <div class="cyber-divider" style="margin-bottom:3.5rem"></div>
+
+        <!-- THI ĐẤU -->
+        <div class="section-label" style="margin-bottom:1.5rem">// COMPETITIONS &amp; CONTESTS</div>
+        <div class="achievement-grid" style="margin-bottom:3.5rem">
+          <div class="glass-card ach-card">
+            <div class="card-led"></div>
+            <span class="ach-badge">⚛️</span>
+            <div class="ach-category">// OLYMPIC VẬT LÝ</div>
+            <div class="ach-title">Đội tuyển HSG Quốc gia Vật lý</div>
+            <div class="ach-desc">Được chọn vào đội tuyển thi học sinh giỏi quốc gia môn Vật lý, cạnh tranh ở cấp độ cao nhất trong hệ thống giáo dục phổ thông.</div>
+            <div class="ach-year">// 2024 — 2026</div>
+          </div>
+          <div class="glass-card ach-card">
+            <div class="card-led"></div>
+            <span class="ach-badge">🔬</span>
+            <div class="ach-category">// CHUYÊN LÝ</div>
+            <div class="ach-title">Học sinh lớp chuyên Vật lý</div>
+            <div class="ach-desc">Theo học chương trình chuyên sâu Vật lý trong suốt 3 năm THPT, rèn luyện tư duy phân tích và giải quyết vấn đề phức tạp.</div>
+            <div class="ach-year">// 2023 — 2026</div>
+          </div>
+        </div>
+
+        <div class="cyber-divider" style="margin-bottom:3.5rem"></div>
+
+        <!-- CHỨNG CHỈ -->
+        <div class="section-label" style="margin-bottom:1.5rem">// CERTIFICATES &amp; COURSES</div>
+        <div class="achievement-grid">
+          <div class="glass-card ach-card">
+            <div class="card-led"></div>
+            <span class="ach-badge">🌐</span>
+            <div class="ach-category">// NGOẠI NGỮ</div>
+            <div class="ach-title">TOEIC Listening &amp; Reading 855</div>
+            <div class="ach-desc">Đạt 855/990 điểm TOEIC Listening and Reading, đủ điều kiện tham gia các chương trình học thuật và môi trường làm việc quốc tế.</div>
+            <div class="ach-year">// 2025</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== TAB: PROJECTS ==================== -->
+    <div class="page" id="page-projects">
+      <div class="subpage-hero">
+        <button class="back-btn" onclick="navigate('home')">← // BACK_TO_HOME</button>
+        <div class="section-label">// MODULE_02 · PROJECT_LOG</div>
+        <h1 class="section-title">Dự án <span class="gradient-text">nổi bật</span></h1>
+      </div>
+      <div class="subpage-content">
+        <div class="proj-grid">
+          
+          <div class="glass-card proj-card featured-proj">
+            <div class="card-led" style="background-color: var(--neon-purple); box-shadow: var(--glow-purple);"></div>
+            <div class="proj-num">// PROJECT_01 · FEATURED</div>
+            <h2 class="proj-title">StudyMate</h2>
+            <p class="proj-desc">Ứng dụng quản lý kế hoạch học tập cá nhân — giúp sinh viên lên lịch ôn thi, theo dõi tiến độ từng môn học, đặt mục tiêu theo tuần/tháng và nhận nhắc nhở thông minh. Hướng tới giải quyết bài toán học tập thiếu hệ thống mà sinh viên năm nhất thường gặp.</p>
+            <div class="proj-tags">
+              <span class="tag">Python</span><span class="tag">Tkinter</span><span class="tag">SQLite</span><span class="tag">Schedule</span>
+            </div>
+          </div>
+          
+          <div class="glass-card proj-card">
+            <div class="card-led"></div>
+            <div class="proj-num">// PROJECT_02</div>
+            <h2 class="proj-title">Pokémon Terminal Game</h2>
+            <p class="proj-desc">Game Pokémon tự code chạy trên terminal — bao gồm hệ thống chiến đấu turn-based, chỉ số HP/Attack/Defense, type advantage (lửa > cỏ > nước...), và lưu tiến trình. Dự án thực hành OOP và thuật toán game logic.</p>
+            <div class="proj-tags">
+              <span class="tag">Python</span><span class="tag">OOP</span><span class="tag">CLI</span><span class="tag">Game Logic</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB: EXPERIENCE ==================== -->
+    <div class="page" id="page-experience">
+      <div class="subpage-hero">
+        <button class="back-btn" onclick="navigate('home')">← // BACK_TO_HOME</button>
+        <div class="section-label">// MODULE_03 · PERSONAL_LOG</div>
+        <h1 class="section-title">Trải nghiệm <span class="gradient-text">cá nhân</span></h1>
+      </div>
+      <div class="subpage-content">
+
+        <!-- HÀNH TRÌNH HỌC TẬP -->
+        <div class="section-label" style="margin-bottom:2rem">// LEARNING_JOURNEY</div>
+        <div class="exp-timeline" style="margin-bottom:4rem">
+          <div class="exp-item">
+            <div class="exp-period">// 2026 — HIỆN TẠI</div>
+            <div class="exp-title">Đại học Bách Khoa Hà Nội</div>
+            <div class="exp-sub">Tân sinh viên ngành ITE-10, Khóa K71</div>
+            <div class="exp-desc">Bắt đầu hành trình tại HUST — một trong những ngôi trường kỹ thuật hàng đầu Việt Nam. Đang xây dựng nền tảng lập trình và toán học, đồng thời khám phá thế giới trí tuệ nhân tạo trong môi trường đại học chuyên sâu.</div>
+            <div class="exp-tags">
+              <span class="tag">HUST</span><span class="tag">ITE-10</span><span class="tag">K71</span><span class="tag">Fresher</span>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-period">// 2026</div>
+            <div class="exp-title">Chuyển hướng sang Trí tuệ nhân tạo</div>
+            <div class="exp-sub">Từ nền tảng Vật lý đến đam mê AI</div>
+            <div class="exp-desc">Sau hành trình dài với Vật lý, mình quyết định dấn thân vào lĩnh vực Trí tuệ nhân tạo — nơi tư duy logic, khả năng mô hình hóa và giải quyết vấn đề từ Vật lý trở thành lợi thế thực sự trong nghiên cứu và xây dựng AI.</div>
+            <div class="exp-tags">
+              <span class="tag">AI</span><span class="tag">Machine Learning</span><span class="tag">Chuyển hướng</span>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-period">// 2023 — 2026</div>
+            <div class="exp-title">THPT Chuyên Hà Tĩnh — Lớp chuyên Vật lý</div>
+            <div class="exp-sub">Học sinh đội tuyển HSG Quốc gia môn Vật lý</div>
+            <div class="exp-desc">Ba năm theo học chương trình chuyên sâu Vật lý tại THPT Chuyên Hà Tĩnh, liên tục đạt giải Nhất cấp tỉnh và lọt đội tuyển quốc gia với giải Ba (2024-2025) rồi giải Nhất (2025-2026). Giai đoạn rèn tư duy phân tích, toán học và khả năng giải quyết vấn đề chuyên sâu.</div>
+            <div class="exp-tags">
+              <span class="tag">Vật lý</span><span class="tag">HSG Quốc gia</span><span class="tag">Toán học</span><span class="tag">Hà Tĩnh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cyber-divider" style="margin-bottom:3.5rem"></div>
+
+        <!-- SỞ THÍCH -->
+        <div class="section-label" style="margin-bottom:1.5rem">// PERSONAL_INTERESTS</div>
+        <p style="color:var(--color-muted);font-size:1.05rem;line-height:1.75;margin-bottom:2rem;max-width:700px">
+          Ngoài việc học, mình là người thích khám phá và tìm kiếm những trải nghiệm mới. Những sở thích này không chỉ là giải trí — chúng giúp mình tư duy sáng tạo hơn.
+        </p>
+        <div class="hobby-grid">
+          <div class="hobby-card"><div class="hobby-icon">🎮</div><div class="hobby-name">Gaming</div></div>
+          <div class="hobby-card"><div class="hobby-icon">📚</div><div class="hobby-name">Đọc sách</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🎵</div><div class="hobby-name">Âm nhạc</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🚴</div><div class="hobby-name">Thể thao</div></div>
+          <div class="hobby-card"><div class="hobby-icon">📷</div><div class="hobby-name">Nhiếp ảnh</div></div>
+          <div class="hobby-card"><div class="hobby-icon">✈️</div><div class="hobby-name">Du lịch</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🍳</div><div class="hobby-name">Nấu ăn</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🤖</div><div class="hobby-name">AI &amp; Tech</div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div> <!-- END #global-container -->
+
+  <!-- ==================== TUAN.AI INTERACTIVE WIDGET ==================== -->
+  <div id="tuanai-toggle">
+    <div class="pulse"></div>
+    <!-- Chat Icon SVG -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="#00f5ff" stroke-width="1.8">
+      <rect x="3" y="4" width="18" height="14" rx="1.5"/>
+      <path d="M7 9l3 2-3 2M12 13h5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div id="tuanai-panel">
+    <div class="tuanai-header">
+      <div class="tuanai-avatar">&gt;_</div>
+      <div class="tuanai-title">
+        <div class="name">TUAN.AI</div>
+        <div class="status">ONLINE</div>
+      </div>
+      <div class="tuanai-close" id="tuanai-close">✕</div>
+    </div>
+
+    <div class="tuanai-messages" id="tuanai-messages">
+      <div class="msg bot">
+        <span class="label">system</span>
+        Chào bạn! Mình là TUAN.AI — trợ lý số đại diện cho Nguyễn Anh Tuấn. Mình có thể giúp bạn tìm hiểu về kỹ năng, dự án, thành tích, hoặc cách liên hệ với Tuấn. Bạn muốn biết điều gì?
+      </div>
+    </div>
+
+    <div class="tuanai-suggestions" id="tuanai-suggestions">
+      <div class="tuanai-chip" data-q="Dự án nổi bật của Tuấn?">Dự án nổi bật?</div>
+      <div class="tuanai-chip" data-q="Thành tích của Tuấn?">Thành tích?</div>
+      <div class="tuanai-chip" data-q="Mình muốn liên hệ với Tuấn">Liên hệ Tuấn</div>
+    </div>
+
+    <div class="tuanai-inputbar">
+      <input type="text" id="tuanai-input" placeholder="Nhập câu hỏi...">
+      <button class="tuanai-send" id="tuanai-send">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12l18-8-8 18-2-8-8-2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Cursor fallback element -->
+  <div id="cursor-fallback" aria-hidden="true"></div>
+
+  <!-- Firebase compatibility client-side SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+  
+  <script>
+    /* Firebase Configuration */
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyDBC967I2kSgk-DHD4VdSlVPFGFmoTcTnY",
+      authDomain: "tuan-portfolio-8958f.firebaseapp.com",
+      projectId: "tuan-portfolio-8958f",
+      storageBucket: "tuan-portfolio-8958f.firebasestorage.app",
+      messagingSenderId: "585443513692",
+      appId: "1:585443513692:web:b6c4b1a5ef773f31c19d99",
+      measurementId: "G-9Z3YSZSVNY"
+    };
+    
+    let fsdb = null;
+    try {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      fsdb = firebase.firestore();
+    } catch (e) {
+      console.warn('[Firebase] Lỗi khởi tạo. Site chạy ở chế độ offline, dữ liệu được lưu tạm cục bộ.', e);
+    }
+  </script>
+
+  <!-- Main Website Scripts -->
+  <script>
+    // Set dynamic footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // MOBILE NAVIGATION BAR HANDLER
+    (function() {
+      const hamburger = document.getElementById('nav-hamburger');
+      const navLinks = document.getElementById('nav-links');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+        navLinks.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+      }
+    })();
+
+    // SPA NAVIGATION ROUTER
+    let currentPage = 'home';
+    let isTransitioning = false;
+
+    function navigate(page) {
+      if (page === currentPage || isTransitioning) return;
+      const oldEl = document.getElementById('page-' + currentPage);
+      const newEl = document.getElementById('page-' + page);
+      if (!oldEl || !newEl) return;
+      
+      const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function syncPageState() {
+        currentPage = page;
+        window.scrollTo({ top: 0 });
+        
+        // Sync active styles on navigation buttons
+        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('sub-active'));
+        const navBtn = document.getElementById('nav-' + page);
+        if (navBtn) navBtn.classList.add('sub-active');
+      }
+
+      if (reduced) {
+        oldEl.classList.remove('active');
+        newEl.classList.add('active');
+        syncPageState();
+        setTimeout(triggerReveals, 50);
+        return;
+      }
+
+      isTransitioning = true;
+      
+      // 3D Depth Zoom Transition
+      newEl.classList.add('active', 'pz-enter', 'pz-enter-from');
+      oldEl.classList.add('pz-exit');
+      document.querySelector('nav').classList.add('pz-lite');
+      syncPageState();
+
+      let cleaned = false;
+      function cleanup() {
+        if (cleaned) return;
+        cleaned = true;
+        newEl.removeEventListener('transitionend', onTransitionEnd);
+        oldEl.classList.remove('active', 'pz-exit');
+        newEl.classList.remove('pz-enter', 'pz-enter-to');
+        document.querySelector('nav').classList.remove('pz-lite');
+        isTransitioning = false;
+        triggerReveals();
+      }
+
+      function onTransitionEnd(e) {
+        if (e.target === newEl && e.propertyName === 'transform') cleanup();
+      }
+
+      newEl.addEventListener('transitionend', onTransitionEnd);
+      setTimeout(cleanup, 900); // safety fallback
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          newEl.classList.remove('pz-enter-from');
+          newEl.classList.add('pz-enter-to');
+        });
+      });
+    }
+
+    function navigateSection(sectionId) {
+      navigate('home');
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (window.SharedDB) SharedDB.addPageView('section_' + sectionId);
+      }, 500);
+    }
+
+    function triggerReveals() {
+      // Trigger animations for current visible page
+      const activePage = document.querySelector('.page.active');
+      if (!activePage) return;
+      
+      // Trigger skill bars fills if we are on HUST / Về tôi page
+      activePage.querySelectorAll('.skill-bar div').forEach(bar => {
+        const target = bar.parentNode.previousElementSibling.firstElementChild?.getAttribute('data-width') || '80%';
+        bar.style.width = bar.parentNode.parentNode.querySelector('span').textContent.includes('Python') ? '85%' :
+                          bar.parentNode.parentNode.querySelector('span').textContent.includes('C++') ? '75%' :
+                          bar.parentNode.parentNode.querySelector('span').textContent.includes('Web') ? '70%' : '80%';
+      });
+    }
+
+    // Trigger skills loading dynamically via Intersection Observer
+    const skillsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.skill-bar div').forEach(bar => {
+            const spanText = bar.parentNode.previousElementSibling.textContent;
+            let width = '80%';
+            if (spanText.includes('Python')) width = '85%';
+            else if (spanText.includes('C++')) width = '75%';
+            else if (spanText.includes('Web')) width = '70%';
+            bar.style.width = width;
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    document.querySelectorAll('.skills-matrix').forEach(m => skillsObserver.observe(m));
+
+    /* ============================================================
+       SHARED DATA SYSTEM (Preserves Firestore Writes)
+       ============================================================ */
+    window.SharedDB = {
+      uid: () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      
+      _localFallback(key, row) {
+        try {
+          const rows = JSON.parse(localStorage.getItem(key) || '[]');
+          rows.unshift(row);
+          localStorage.setItem(key, JSON.stringify(rows));
+        } catch(e) {}
+      },
+
+      async addMessage(msg) {
+        const row = {
+          sender_name: msg.sender_name || 'Khách truy cập',
+          sender_email: msg.sender_email || '',
+          message: msg.message || '',
+          source: msg.source || 'contact_form',
+          is_read: false,
+          created_at: new Date().toISOString(),
+        };
+        try {
+          if (fsdb) {
+            await fsdb.collection('messages').doc(this.uid()).set(row);
+          } else {
+            this._localFallback('tuanos_messages', row);
+          }
+        } catch(e) {
+          console.warn('[SharedDB] Lỗi lưu Firestore, lưu tạm ở local', e);
+          this._localFallback('tuanos_messages', row);
+        }
+        return row;
+      },
+
+      async addPageView(page) {
+        const row = { page, viewed_at: new Date().toISOString() };
+        try {
+          if (fsdb) {
+            await fsdb.collection('pageviews').doc(this.uid()).set(row);
+          } else {
+            this._localFallback('tuanos_pageviews', row);
+          }
+        } catch(e) {
+          this._localFallback('tuanos_pageviews', row);
+        }
+        return row;
+      }
+    };
+
+    SharedDB.addPageView('portfolio_home');
+
+    // FORM HANDLE
+    async function handleSubmit(btn) {
+      const form = btn.closest('.contact-form');
+      const name = form.querySelector('input[type=text]').value.trim();
+      const email = form.querySelector('input[type=email]').value.trim();
+      const content = form.querySelector('textarea').value.trim();
+
+      if (!name || !email || !content) {
+        btn.textContent = '// THIẾU THÔNG TIN!';
+        btn.style.color = '#ff3366'; btn.style.borderColor = '#ff3366';
+        setTimeout(() => { btn.textContent = '// GỬI TÍN HIỆU'; btn.style.color=''; btn.style.borderColor=''; }, 1500);
+        return;
+      }
+
+      btn.textContent = '// ĐANG GỬI...';
+      btn.style.color = 'var(--neon-purple)'; btn.style.borderColor = 'var(--neon-purple)';
+
+      await SharedDB.addMessage({ sender_name: name, sender_email: email, message: content, source: 'contact_form' });
+      btn.textContent = '// TÍN HIỆU ĐÃ GỬI ✓';
+      btn.style.color = 'var(--neon-green)'; btn.style.borderColor = 'var(--neon-green)';
+      form.querySelector('input[type=text]').value = '';
+      form.querySelector('input[type=email]').value = '';
+      form.querySelector('textarea').value = '';
+      setTimeout(() => { btn.textContent = '// GỬI TÍN HIỆU'; btn.style.color=''; btn.style.borderColor=''; }, 2000);
+    }
+
+    // BUTTON CLICK RIPPLE ANIMATION
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // SCROLL BAR PROGRESS UPDATER
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          document.getElementById('scroll-progress').style.width = progress + '%';
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
+
+    // MOUSE TRACKER FOR INTERACTIVE canvas
+    const mouse = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      tx: window.innerWidth / 2,
+      ty: window.innerHeight / 2
+    };
+
+    window.addEventListener('pointermove', (e) => {
+      mouse.tx = e.clientX;
+      mouse.ty = e.clientY;
+      // Fallback cursor position
+      const fallback = document.getElementById('cursor-fallback');
+      if (fallback) {
+        fallback.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0)`;
+      }
+    }, { passive: true });
+
+    // Interactive canvas grid of dots
+    (function() {
+      const canvas = document.getElementById('interactive-bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        canvas.style.display = 'none';
+        return;
+      }
+      
+      document.body.classList.add('neon-cursor-active');
+
+      const gap = 45;
+      const influenceRadius = 120;
+      let width = 0, height = 0, cols = 0, rows = 0, points = [];
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        cols = Math.ceil(width / gap) + 1;
+        rows = Math.ceil(height / gap) + 1;
+        points = [];
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            points.push({
+              baseX: c * gap,
+              baseY: r * gap,
+              x: c * gap,
+              y: r * gap,
+              vx: 0, vy: 0
+            });
+          }
+        }
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+        mouse.x += (mouse.tx - mouse.x) * 0.15;
+        mouse.y += (mouse.ty - mouse.y) * 0.15;
+
+        points.forEach(p => {
+          const dx = p.baseX - mouse.x;
+          const dy = p.baseY - mouse.y;
+          const dist = Math.hypot(dx, dy);
+          let tx = p.baseX;
+          let ty = p.baseY;
+
+          if (dist < influenceRadius) {
+            const influence = 1 - dist / influenceRadius;
+            const push = influence * 15;
+            const angle = Math.atan2(dy, dx);
+            tx = p.baseX + Math.cos(angle) * push;
+            ty = p.baseY + Math.sin(angle) * push;
+          }
+
+          p.vx += (tx - p.x) * 0.08;
+          p.vy += (ty - p.y) * 0.08;
+          p.vx *= 0.85;
+          p.vy *= 0.85;
+          p.x += p.vx;
+          p.y += p.vy;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, dist < influenceRadius ? 2.5 : 1, 0, Math.PI * 2);
+          ctx.fillStyle = dist < influenceRadius ? `rgba(0, 245, 255, ${0.15 + (1 - dist / influenceRadius) * 0.6})` : 'rgba(255, 255, 255, 0.08)';
+          ctx.fill();
+        });
+
+        requestAnimationFrame(loop);
+      }
+
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+      loop();
+    })();
+
+    // CLI AUTOMATIC TYPING EFFECT
+    (function() {
+      const term = document.querySelector('.hero-terminal');
+      const body = term ? term.querySelector('.terminal-body') : null;
+      if (!term || !body || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const lines = [
+        { type: 'cmd', text: 'whoami' },
+        { type: 'out', text: 'nguyen_anh_tuan' },
+        { type: 'cmd', text: 'cat role.txt' },
+        { type: 'out', text: 'Fresher Student @ HUST · ITE-10 · K71' },
+        { type: 'cmd', text: 'cat location.txt' },
+        { type: 'out', text: 'Ha Noi, Viet Nam 🇻🇳' },
+        { type: 'cmd', text: 'cat status.txt' },
+        { type: 'out', text: 'Open to opportunities ✓', style: 'color:#22c55e' },
+        { type: 'cmd', text: 'ls ./skills/' },
+        { type: 'out', text: 'python/ c++/ web/ algorithms/', style: 'color: rgba(148, 163, 184, 0.45)' }
+      ];
+
+      function typeText(el, text, speed, done) {
+        let i = 0;
+        const prefix = el.classList.contains('cmd') ? '$ ' : '';
+        (function step() {
+          el.textContent = prefix + text.slice(0, i);
+          i++;
+          if (i <= text.length) setTimeout(step, speed);
+          else done();
+        })();
+      }
+
+      async function runCycle() {
+        body.innerHTML = '';
+        for (const line of lines) {
+          const el = document.createElement('div');
+          el.className = line.type;
+          if (line.style) el.setAttribute('style', line.style);
+          body.appendChild(el);
+          await new Promise(res => typeText(el, line.text, line.type === 'cmd' ? 40 : 15, res));
+          await new Promise(r => setTimeout(r, line.type === 'cmd' ? 300 : 800));
+        }
+        const cursor = document.createElement('div');
+        cursor.className = 'cmd';
+        cursor.innerHTML = '$ _<span class="terminal-cursor"></span>';
+        body.appendChild(cursor);
+        await new Promise(r => setTimeout(r, 4000));
+        runCycle();
+      }
+
+      runCycle();
+      
+      term.style.cursor = 'pointer';
+      term.addEventListener('click', async () => {
+        body.innerHTML = '';
+        const echoCmd = document.createElement('div');
+        echoCmd.className = 'cmd';
+        body.appendChild(echoCmd);
+        await new Promise(res => typeText(echoCmd, 'echo "hello"', 40, res));
+        const echoOut = document.createElement('div');
+        echoOut.className = 'out';
+        echoOut.style.color = '#22c55e';
+        body.appendChild(echoOut);
+        await new Promise(res => typeText(echoOut, 'Cảm ơn bạn đã ghé thăm! 👋', 20, res));
+        setTimeout(runCycle, 3000);
+      });
+    })();
+
+    // Preloader animation
+    (function() {
+      let progress = 0;
+      const bar = document.getElementById('loader-bar');
+      const loader = document.getElementById('preloader');
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          if (loader) {
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+            setTimeout(() => { loader.style.display = 'none'; }, 800);
+          }
+        }
+        if (bar) bar.style.width = progress + '%';
+      }, 150);
+    })();
+
+    /* ============================================================
+       CARD 3D FLIP SYSTEM DEFINITION
+       ============================================================ */
+    function initCardFlip(selector, opts = {}) {
+      document.querySelectorAll(selector).forEach(card => {
+        if (card.dataset.flipInit) return;
+        card.dataset.flipInit = '1';
+
+        const front = document.createElement('div');
+        front.className = 'card-face card-face-front';
+        while (card.firstChild) front.appendChild(card.firstChild);
+
+        const title = front.querySelector(opts.titleSel)?.textContent.trim() || '';
+        const meta = opts.metaSel ? (front.querySelector(opts.metaSel)?.textContent.trim() || '') : '';
+        const badge = opts.badgeSel ? (front.querySelector(opts.badgeSel)?.textContent.trim() || '') : '◆';
+        const tags = Array.from(front.querySelectorAll('.tag')).map(t => t.textContent.trim());
+
+        const back = document.createElement('div');
+        back.className = 'card-face card-face-back';
+        back.innerHTML = `
+          <div class="card-back-badge">${badge}</div>
+          <div class="card-back-title">${title}</div>
+          ${meta ? `<div class="card-back-meta">${meta}</div>` : ''}
+          <div class="card-back-scan">// STATUS: VERIFIED ✓</div>
+          ${tags.length ? `<div class="card-back-taglist">${tags.map(t => `<span>&gt;${t}</span>`).join('')}</div>` : ''}
+          <div class="card-back-hint">◄ nhấn để quay lại</div>
+        `;
+
+        const inner = document.createElement('div');
+        inner.className = 'card-flip-inner';
+        inner.appendChild(front);
+        inner.appendChild(back);
+        card.appendChild(inner);
+        card.classList.add('card-flip-outer');
+
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button, a')) return;
+          card.classList.toggle('flipped');
+        });
+      });
+    }
+
+    initCardFlip('.ach-card', { titleSel: '.ach-title', metaSel: '.ach-year', badgeSel: '.ach-badge' });
+    initCardFlip('.proj-card', { titleSel: '.proj-title', metaSel: '.proj-num' });
+
+    /* ============================================================
+       TUAN.AI CHAT WIDGET INTERACTION (Firebase preserved)
+       ============================================================ */
+    (function() {
+      const toggle = document.getElementById('tuanai-toggle');
+      const panel = document.getElementById('tuanai-panel');
+      const closeBtn = document.getElementById('tuanai-close');
+      const messagesEl = document.getElementById('tuanai-messages');
+      const input = document.getElementById('tuanai-input');
+      const sendBtn = document.getElementById('tuanai-send');
+      const suggestions = document.getElementById('tuanai-suggestions');
+
+      if (!toggle || !panel || !closeBtn) return;
+
+      toggle.addEventListener('click', () => panel.classList.toggle('open'));
+      closeBtn.addEventListener('click', () => panel.classList.remove('open'));
+
+      function addMessage(role, html) {
+        const div = document.createElement('div');
+        div.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+        div.innerHTML = `<span class="label">${role === 'user' ? 'you' : 'tuan.ai'}</span>${html}`;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function showTyping() {
+        const t = document.createElement('div');
+        t.className = 'typing'; t.id = 'tuanai-typing';
+        t.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(t);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function hideTyping() {
+        const t = document.getElementById('tuanai-typing');
+        if (t) t.remove();
+      }
+
+      const KB = {
+        intro: "Mình là TUAN.AI — trợ lý số đại diện cho Nguyễn Anh Tuấn, tân sinh viên ngành ITE-10, K71, Đại học Bách Khoa Hà Nội. Bạn có thể hỏi mình về dự án, thành tích, kỹ năng, học vấn, hoặc cách liên hệ với Tuấn nhé!",
+        education: "Tuấn là tân sinh viên ITE-10, K71 tại HUST (từ 2026). Trước đó học chuyên Vật lý 3 năm tại THPT Chuyên Hà Tĩnh (2023-2026), từng vào đội tuyển HSG Quốc gia môn Vật lý với giải Ba (2024-2025) và giải Nhất (2025-2026). Năm 2026 chuyển hướng sang ngành Trí tuệ nhân tạo tại HUST.",
+        achievements: "Một số thành tích nổi bật: Giải Nhất HSG Quốc gia Vật lý (2025-2026), Giải Ba HSG Quốc gia Vật lý (2024-2025), nhiều giải Nhất HSG Tỉnh Vật lý, và TOEIC L&R 855/990.",
+        skills: "Kỹ năng kỹ thuật: Python, C++, Web (HTML/CSS/JS), thuật toán & cấu trúc dữ liệu. Tuấn cũng đang làm quen với LangChain, ChromaDB, RAG cho dự án chatbot.",
+        projects: "Tuấn hiện có 2 dự án nổi bật: (1) StudyMate — app quản lý kế hoạch học tập cá nhân, giúp sinh viên lên lịch ôn thi, theo dõi tiến độ từng môn, đặt mục tiêu theo tuần/tháng (Python, Tkinter, SQLite); (2) Pokémon Terminal Game — game Pokémon tự code chạy trên terminal với hệ thống chiến đấu turn-based, type advantage, lưu tiến trình (Python, OOP, CLI).",
+        contact: "contact"
+      };
+
+      const GREETINGS = ["Chào bạn! Rất vui được trò chuyện. Bạn muốn biết gì về Tuấn — dự án, thành tích, kỹ năng hay cách liên hệ?", "Hi! Mình là TUAN.AI đây 👋 Bạn muốn hỏi mình điều gì về Tuấn nào?", "Xin chào! Mình có thể kể cho bạn nghe về dự án, thành tích hoặc học vấn của Tuấn. Bạn quan tâm điều gì?"];
+      const THANKS = ["Không có gì cả, rất vui vì giúp được bạn! Còn điều gì khác mình có thể hỗ trợ không?", "Luôn sẵn sàng giúp bạn! Nếu cần biết thêm gì về Tuấn cứ hỏi mình nhé.", "Cảm ơn bạn đã ghé qua! Có gì khác mình giúp được không?"];
+      const BYES = ["Hẹn gặp lại bạn! Nếu muốn liên hệ trực tiếp với Tuấn, đừng ngại nhắn qua form ở đây nhé.", "Tạm biệt! Chúc bạn một ngày tốt lành 👋", "Cảm ơn bạn đã trò chuyện, hẹn gặp lại!"];
+      const HOW_ARE_YOU = ["Mình ổn, cảm ơn bạn đã hỏi! Còn bạn thì sao? Mình có thể giúp gì cho bạn về Tuấn không?", "Mình luôn sẵn sàng và đầy năng lượng 🙂 Bạn đang muốn tìm hiểu điều gì về Tuấn vậy?"];
+
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+      async function getAgentReply(userText) {
+        await new Promise(r => setTimeout(r, 600));
+        const raw = userText.trim();
+        const t = raw.toLowerCase();
+
+        if (/^(hi|hello|hey|yo|alo|chao|chào|xin chào|xin chao)\b/.test(t) || t === 'hí' || t === 'chào bạn') return pick(GREETINGS);
+        if (t.includes('cảm ơn') || t.includes('cam on') || t.includes('thanks') || t.includes('thank you') || t.includes('thank')) return pick(THANKS);
+        if (t.includes('tạm biệt') || t.includes('tam biet') || t.includes('bye') || t.includes('goodbye') || t.includes('hẹn gặp lại')) return pick(BYES);
+        if (t.includes('khỏe không') || t.includes('khoe khong') || t.includes('how are you') || t.includes('sao rồi')) return pick(HOW_ARE_YOU);
+        if (t.includes('bạn là ai') || t.includes('ban la ai') || t.includes('who are you') || t.includes('whoami') || t.includes('giới thiệu') || t.includes('bạn là gì') || t.includes('bạn tên gì')) return KB.intro;
+        if (t.includes('bạn có thể làm gì') || t.includes('bạn giúp được gì') || t.includes('help') || t === '?') return "Mình có thể trả lời về dự án, thành tích, kỹ năng, học vấn của Tuấn, hoặc giúp bạn gửi tin nhắn liên hệ trực tiếp cho Tuấn. Bạn muốn bắt đầu từ đâu?";
+        if (/^(ok|oke|okay|ừ|uh|ừm|được|dc|👍)$/.test(t)) return "Được rồi! Bạn cứ hỏi mình bất cứ lúc nào về Tuấn nhé 🙂";
+
+        if (t.includes('dự án') || t.includes('project')) return KB.projects;
+        if (t.includes('thành tích') || t.includes('giải') || t.includes('achievement')) return KB.achievements;
+        if (t.includes('kỹ năng') || t.includes('skill')) return KB.skills;
+        if (t.includes('học') || t.includes('trường') || t.includes('hust') || t.includes('ite')) return KB.education;
+        if (t.includes('liên hệ') || t.includes('contact') || t.includes('email') || t.includes('sđt') || t.includes('số điện thoại')) return KB.contact;
+
+        return "Mình chưa có đủ dữ liệu để trả lời chính xác câu này. Bạn có thể hỏi mình về dự án, thành tích, kỹ năng, học vấn hoặc cách liên hệ với Tuấn nhé!";
+      }
+
+      function showContactForm() {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg bot';
+        wrap.style.padding = '0'; wrap.style.background = 'transparent'; wrap.style.border = 'none';
+        wrap.innerHTML = `
+          <div class="tuanai-contact-form">
+            <div class="ttl">// gửi tin nhắn cho Tuấn</div>
+            <input type="text" placeholder="Tên của bạn" id="cf-name">
+            <input type="email" placeholder="Email" id="cf-email">
+            <textarea placeholder="Nội dung..." id="cf-message"></textarea>
+            <button id="cf-submit">GỬI TIN NHẮN</button>
+          </div>`;
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        wrap.querySelector('#cf-submit').addEventListener('click', async () => {
+          const name = wrap.querySelector('#cf-name').value.trim();
+          const email = wrap.querySelector('#cf-email').value.trim();
+          const message = wrap.querySelector('#cf-message').value.trim();
+          if (!name || !email || !message) { alert('Vui lòng điền đầy đủ thông tin.'); return; }
+          await SharedDB.addMessage({ sender_name: name, sender_email: email, message, source: 'chat_widget' });
+          wrap.remove();
+          addMessage('bot', 'Tin nhắn đã được gửi đến Tuấn thành công! Tuấn sẽ phản hồi qua email bạn đã cung cấp. Bạn cũng có thể email trực tiếp: <strong style="color:var(--neon-cyan)">tuan2k8cht@gmail.com</strong>');
+        });
+      }
+
+      async function handleUserInput(text) {
+        if (!text.trim()) return;
+        addMessage('user', text);
+        SharedDB.addMessage({ sender_name: 'Khách chat', sender_email: '', message: text, source: 'chat_question' });
+        input.value = '';
+        showTyping();
+        const reply = await getAgentReply(text);
+        hideTyping();
+        if (reply === KB.contact) {
+          addMessage('bot', 'Bạn để lại tên, email và nội dung, mình sẽ chuyển tin nhắn này đến Tuấn nhé:');
+          showContactForm();
+        } else {
+          addMessage('bot', reply);
+        }
+      }
+
+      sendBtn.addEventListener('click', () => handleUserInput(input.value));
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') handleUserInput(input.value); });
+      suggestions.addEventListener('click', e => {
+        const q = e.target.getAttribute('data-q');
+        if (q) handleUserInput(q);
+      });
+    })();
+  </script>
+</body>
+</html>
